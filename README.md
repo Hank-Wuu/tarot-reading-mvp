@@ -2,7 +2,7 @@
 
 一个面向中文用户的塔罗抽牌解读网站 MVP，基于 Next.js App Router、TypeScript、Tailwind CSS、Supabase 和 OpenAI API。
 
-当前这份仓库适合直接放到 GitHub 做项目展示、继续迭代，或者后续再接正式部署与支付。
+当前这份仓库已经整理成适合公开放到 GitHub 的状态，可以直接用于作品集展示、二次开发，或者继续接入正式部署与支付。
 
 ## 功能范围
 
@@ -22,6 +22,14 @@
 - Supabase / PostgreSQL
 - OpenAI API
 
+## 当前状态
+
+- 核心抽牌和结果页可本地直接运行
+- 不配置 OpenAI 时，仍可使用本地 fallback 解读逻辑
+- 不配置 Supabase 时，仍可体验前端流程和 localStorage 历史记录
+- 支付层目前保留了 Creem 托管支付适配代码，但默认不要求启用
+- 兑换码流程已经停用，当前代码以“托管支付 + webhook 自动解锁”为预留结构
+
 ## 目录结构
 
 ```text
@@ -34,13 +42,18 @@ lib/readings/           抽牌记录服务端存取
 lib/storage/            本地历史记录
 lib/supabase/           Supabase client/server 封装
 lib/tarot/              牌阵、抽牌逻辑、牌义数据
-public/                 静态资源
 types/                  通用类型
 ```
 
 ## 本地运行
 
 1. 安装依赖
+
+```bash
+pnpm install
+```
+
+也可以使用：
 
 ```bash
 npm install
@@ -54,22 +67,34 @@ cp .env.example .env.local
 
 3. 按需填写配置
 
-- `OPENAI_API_KEY`：可选；不填时会使用本地 fallback 解读逻辑
-- `NEXT_PUBLIC_SUPABASE_URL`：可选；启用服务端存档时需要
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`：可选；启用服务端存档时需要
-- `SUPABASE_SERVICE_ROLE_KEY`：可选；启用服务端存档时需要
+最小可运行配置：
+
 - `NEXT_PUBLIC_APP_URL`
 - `APP_URL`
-- `CREEM_API_KEY`：可选；只有保留自动解锁链路时才需要
+
+可选配置：
+
+- `OPENAI_API_KEY`：启用 OpenAI 个性化解读；不填则走本地 fallback
+- `OPENAI_MODEL`：默认是 `gpt-4.1-mini`
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `CREEM_API_KEY`
 - `CREEM_PRODUCT_ID`
 - `CREEM_WEBHOOK_SECRET`
 - `NEXT_PUBLIC_UNLOCK_PRODUCT_LABEL`
 - `NEXT_PUBLIC_UNLOCK_PRICE_CENTS`
 - `NEXT_PUBLIC_UNLOCK_CURRENCY`
 
-如果你只是把项目放到 GitHub 展示，完全可以先不配置支付。
+如果你只是把项目放到 GitHub 展示，完全可以先不配置 Supabase 和支付。
 
 4. 启动开发环境
+
+```bash
+pnpm dev
+```
+
+如果你使用 npm：
 
 ```bash
 npm run dev
@@ -79,12 +104,34 @@ npm run dev
 
 访问 [http://localhost:3000](http://localhost:3000)
 
+## Supabase 初始化
+
+如果你需要服务端存档、订单状态或后续 webhook 自动解锁，请在 Supabase SQL Editor 中执行：
+
+```sql
+-- copy from lib/db/schema.sql
+```
+
+实际 SQL 文件在 [lib/db/schema.sql](./lib/db/schema.sql)。
+
 ## 数据与解读说明
 
-- 牌义数据文件：`lib/tarot/tarot-cards.json`
-- 数据库结构：`lib/db/schema.sql`
-- 解读生成入口：`lib/ai/reading-service.ts`
-- Prompt 构造：`lib/ai/prompt-builder.ts`
+- 牌义数据文件：[lib/tarot/tarot-cards.json](./lib/tarot/tarot-cards.json)
+- 数据库结构：[lib/db/schema.sql](./lib/db/schema.sql)
+- 解读生成入口：[lib/ai/reading-service.ts](./lib/ai/reading-service.ts)
+- Prompt 构造：[lib/ai/prompt-builder.ts](./lib/ai/prompt-builder.ts)
+- 支付适配入口：[lib/payment/service.ts](./lib/payment/service.ts)
+
+## 支付说明
+
+仓库当前保留的是一个“可继续开发”的支付结构，不是默认强依赖：
+
+- 前端有“解锁完整解读”入口
+- 服务端保留了订单、支付状态、webhook、自动解锁所需结构
+- 当前支付适配层基于 Creem
+- `app/api/redeem-code/route.ts` 已明确停用兑换码流程
+
+如果你的目标只是公开仓库、展示产品能力，这部分可以保持现状，不影响项目运行。
 
 ## GitHub 发布前说明
 
@@ -93,6 +140,7 @@ npm run dev
 - `.env.local`、`.env.vercel` 不应提交
 - `.vercel`、`.next`、`node_modules` 不应提交
 - 本地测试文件已加入忽略
+- 已补充 `LICENSE`
 
 建议推送前再确认一次：
 
@@ -128,3 +176,4 @@ git push -u origin main
 - 可以接正式登录和云端历史记录
 - 可以保留支付适配层，但暂时不启用真实收费
 - 可以直接作为作品集项目展示
+- 可以继续补 CI、截图、演示视频和 issue 模板
