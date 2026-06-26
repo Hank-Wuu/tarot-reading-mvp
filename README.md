@@ -4,6 +4,20 @@
 
 当前这份仓库已经整理成适合公开放到 GitHub 的状态，可以直接用于作品集展示、二次开发，或者继续接入正式部署与支付。
 
+## 页面预览
+
+### 首页
+
+![首页预览](./docs/screenshots/home.png)
+
+### 抽牌页
+
+![抽牌页预览](./docs/screenshots/draw.png)
+
+### 结果页
+
+![结果页预览](./docs/screenshots/result.png)
+
 ## 功能范围
 
 - 首页：产品定位、CTA、常见使用场景
@@ -141,6 +155,7 @@ npm run dev
 - `.vercel`、`.next`、`node_modules` 不应提交
 - 本地测试文件已加入忽略
 - 已补充 `LICENSE`
+- 已补充截图与 `.github` 协作模板
 
 建议推送前再确认一次：
 
@@ -177,3 +192,17 @@ git push -u origin main
 - 可以保留支付适配层，但暂时不启用真实收费
 - 可以直接作为作品集项目展示
 - 可以继续补 CI、截图、演示视频和 issue 模板
+
+## 协作约定
+
+仓库已经包含这些 GitHub 协作模板：
+
+- `.github/ISSUE_TEMPLATE/bug_report.md`
+- `.github/ISSUE_TEMPLATE/feature_request.md`
+- `.github/pull_request_template.md`
+
+如果你准备接受外部贡献，下一步建议再补：
+
+- `CONTRIBUTING.md`
+- GitHub Actions CI
+- 演示站链接
